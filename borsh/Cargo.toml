@@ -25,12 +25,14 @@ borsh-derive = { path = "../borsh-derive" }
 hashbrown = ">=0.11,<0.14"
 bytes = { version = "1", optional = true }
 bson = { version = "2", optional = true }
+chrono = { version = "0.4", optional = true }
 
 [dev-dependencies]
 bytes = "1"
 bson = "2"
+chrono = "0.4"
 # Enable the "bytes" and "bson" features in integ tests: https://github.com/rust-lang/cargo/issues/2911#issuecomment-1464060655
-borsh = { path = ".", features = ["bytes", "bson"] }
+borsh = { path = ".", features = ["bytes", "bson", "chrono"] }
 
 [features]
 default = ["std"]

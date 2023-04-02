@@ -295,6 +295,15 @@ impl BorshSerialize for bson::oid::ObjectId {
     }
 }
 
+#[cfg(any(test, feature = "chrono"))]
+impl BorshSerialize for chrono::DateTime<chrono::Utc> {
+    #[inline]
+    fn serialize<W: Write>(&self, writer: &mut W) -> Result<()> {
+        self.timestamp().serialize(writer)?;
+        self.timestamp_subsec_nanos().serialize(writer)
+    }
+}
+
 impl<T> BorshSerialize for VecDeque<T>
 where
     T: BorshSerialize,

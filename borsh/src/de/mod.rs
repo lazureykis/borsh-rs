@@ -435,6 +435,24 @@ impl BorshDeserialize for bson::oid::ObjectId {
     }
 }
 
+#[cfg(any(test, feature = "chrono"))]
+impl BorshDeserialize for chrono::DateTime<chrono::Utc> {
+    #[inline]
+    fn deserialize_reader<R: Read>(reader: &mut R) -> Result<Self> {
+        let timestamp = i64::deserialize_reader(reader)?;
+        let nanos = u32::deserialize_reader(reader)?;
+        let naive_dt =
+            chrono::NaiveDateTime::from_timestamp_opt(timestamp, nanos).ok_or_else(|| {
+                Error::new(
+                    ErrorKind::InvalidInput,
+                    "Cannot deserialize chrono::DateTime.",
+                )
+            })?;
+
+        Ok(chrono::DateTime::from_utc(naive_dt, chrono::Utc))
+    }
+}
+
 impl<T> BorshDeserialize for Cow<'_, T>
 where
     T: ToOwned + ?Sized,
