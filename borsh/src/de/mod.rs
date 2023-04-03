@@ -453,6 +453,22 @@ impl BorshDeserialize for chrono::DateTime<chrono::Utc> {
     }
 }
 
+#[cfg(any(test, feature = "url"))]
+impl BorshDeserialize for url::Url {
+    #[inline]
+    fn deserialize_reader<R: Read>(reader: &mut R) -> Result<Self> {
+        let string = String::from_utf8(Vec::<u8>::deserialize_reader(reader)?).map_err(|err| {
+            let msg = err.to_string();
+            Error::new(ErrorKind::InvalidData, msg)
+        })?;
+
+        url::Url::parse(&string).map_err(|err| {
+            let msg = err.to_string();
+            Error::new(ErrorKind::InvalidData, msg)
+        })
+    }
+}
+
 impl<T> BorshDeserialize for Cow<'_, T>
 where
     T: ToOwned + ?Sized,

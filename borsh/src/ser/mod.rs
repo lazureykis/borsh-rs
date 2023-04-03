@@ -304,6 +304,14 @@ impl BorshSerialize for chrono::DateTime<chrono::Utc> {
     }
 }
 
+#[cfg(any(test, feature = "url"))]
+impl BorshSerialize for url::Url {
+    #[inline]
+    fn serialize<W: Write>(&self, writer: &mut W) -> Result<()> {
+        self.as_str().serialize(writer)
+    }
+}
+
 impl<T> BorshSerialize for VecDeque<T>
 where
     T: BorshSerialize,

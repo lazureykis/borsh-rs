@@ -1,5 +1,3 @@
-#![allow(clippy::float_cmp)]
-
 use borsh::{BorshDeserialize, BorshSerialize};
 use chrono::{DateTime, Utc};
 
